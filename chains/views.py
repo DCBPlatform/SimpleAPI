@@ -9,6 +9,7 @@ import os
 from substrateinterface import SubstrateInterface, Keypair
 from substrateinterface.exceptions import SubstrateRequestException
 from api.blockchain import substrate
+from api.helpers import get_now
  
 
 class ExtrinsicViews(APIView):
@@ -33,8 +34,9 @@ class ExtrinsicViews(APIView):
         receipt = substrate.submit_extrinsic(extrinsic, wait_for_inclusion=True)
         response_ = {}
         response_['extrinsic'] = extrinsic     
-        response_['receipt'] = receipt     
-        return Response(response_)
+        response_['receipt'] = receipt  
+        response_['timestamp'] = get_now()   
+        return JsonResponse(response_)
 
 class StorageViews(APIView):
 
@@ -63,4 +65,5 @@ class StorageViews(APIView):
 
         response_ = {}
         response_['result'] = result
-        return Response(response_)
+        response_['timestamp'] = get_now()
+        return JsonResponse(response_)

@@ -23,6 +23,7 @@ datastructures.EmptyResultSet = EmptyResultSet
 
 from chains import views as chain_views
 from keys import views as key_views
+from swaps import views as swap_views
 
 
 urlpatterns = [
@@ -33,6 +34,10 @@ urlpatterns = [
     url('v1/keys/generate', key_views.GenerateKeyViews.as_view()),
     url('v1/keys/sign', key_views.KeySignViews.as_view()),
     url('v1/keys/verify', key_views.KeyVerifyViews.as_view()),
+
+    url('v1/swaps/pairs', swap_views.PairViews.as_view()),
+    url('v1/swaps/pairs/<int:pk>/', swap_views.PairDetailViews.as_view()),
+
     # url(r'v1/', include(router.urls)),
     # url(r'auth/', include('rest_auth.urls')),
     # url(r'auth/registration/', include('rest_auth.registration.urls')),

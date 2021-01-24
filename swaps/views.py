@@ -14,7 +14,7 @@ from api.blockchain import substrate
 from api.helpers import get_now
  
 
-class GenerateKeyViews(APIView):
+class PairViews(APIView):
 
     def get(self, request, format=None):
         
@@ -23,17 +23,13 @@ class GenerateKeyViews(APIView):
         mnemonic = Keypair.generate_mnemonic()
         keypair = Keypair.create_from_mnemonic(mnemonic)
         
-        response_ = {
-            'mnemonic': mnemonic, 
-            'address': keypair.ss58_address,
-            'public_key': keypair.public_key,
-            'private_key': keypair.private_key,
-        }
+        response_ = {}
         response_['timestamp'] = get_now()
+        response_['pairs'] = []
         return JsonResponse(response_)
 
 
-class KeySignViews(APIView):
+class PairDetailViews(APIView):
 
     def post(self, request, format=None):
 
@@ -48,26 +44,5 @@ class KeySignViews(APIView):
         response_['address'] = address
         response_['message'] = message
         response_['signature'] = signature
-        response_['timestamp'] = get_now()
-        return JsonResponse(response_)
-
-
-class KeyVerifyViews(APIView):
-
-    def post(self, request, format=None):
-        
-        _data = json.loads(request.body)
-        message = _data['message']
-        signature = _data['signature']
-        address = _data['address']
-
-        keypair = Keypair(ss58_address=address)
-        result = keypair.verify(message, signature)
-
-        response_ = {}
-        response_['address'] = address
-        response_['message'] = message
-        response_['valid'] = result
-        response_['timestamp'] = get_now()
         return JsonResponse(response_)
 

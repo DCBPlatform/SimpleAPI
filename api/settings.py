@@ -24,8 +24,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'chains',
-    'contracts',
-    'keys'
+    'keys',
+    'swaps'
 
 ]
 
