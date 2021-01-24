@@ -25,7 +25,8 @@ INSTALLED_APPS = [
 
     'chains',
     'keys',
-    'swaps'
+    'swaps',
+    'tokens'
 
 ]
 
