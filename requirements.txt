@@ -8,4 +8,4 @@ sqlparse==0.4.1
 gunicorn==19.9.0
 substrate-interface==0.11.9
 python-decouple==3.4
-dj_database_url==0.50
+dj_database_url==0.5.0
