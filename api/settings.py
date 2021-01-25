@@ -24,9 +24,9 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'chains',
-    'keys',
     'swaps',
-    'tokens'
+    'tokens',
+    'wallets',
 
 ]
 

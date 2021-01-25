@@ -9,9 +9,9 @@ from django.core.exceptions import EmptyResultSet
 datastructures.EmptyResultSet = EmptyResultSet
 
 from chains import views as chain_views
-from keys import views as key_views
 from swaps import views as swap_views
 from tokens import views as token_views
+from wallets import views as wallet_views
 
 
 urlpatterns = [
@@ -23,9 +23,10 @@ urlpatterns = [
 
     url('v1/tokens/', token_views.TokenViews.as_view()),
 
-    url('v1/wallets/generate', key_views.GenerateKeyViews.as_view()),
-    url('v1/wallets/sign', key_views.KeySignViews.as_view()),
-    url('v1/wallets/verify', key_views.KeyVerifyViews.as_view()),    
+    url('v1/wallets/balance', wallet_views.WalletBalanceViews.as_view()),
+    url('v1/wallets/generate', wallet_views.GenerateWalletViews.as_view()),
+    url('v1/wallets/sign', wallet_views.WalletSignViews.as_view()),
+    url('v1/wallets/verify', wallet_views.WalletVerifyViews.as_view()),    
 
 ]
 
