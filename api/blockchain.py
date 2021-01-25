@@ -1,17 +1,15 @@
 from substrateinterface.contracts import ContractCode, ContractInstance
 from substrateinterface import SubstrateInterface, Keypair
 
-import ssl 
+from decouple import config
 
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
+import ssl
+from websocket import create_connection
+ws = create_connection(config('NODE_URL'),sslopt={"cert_reqs": ssl.CERT_NONE})
+
 
 substrate = SubstrateInterface(
-    url="wss://1.dcb.my",
+    websocket=ws,
     ss58_format=42,
     type_registry_preset='substrate-node-template'
 )
