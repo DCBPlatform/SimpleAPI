@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'swaps',
     'tokens',
     'wallets',
-
 ]
 
 MIDDLEWARE = [

@@ -5,7 +5,11 @@ from decouple import config
 
 import ssl
 from websocket import create_connection
-ws = create_connection(config('NODE_URL'),sslopt={"cert_reqs": ssl.CERT_NONE})
+ws = create_connection(config('NODE_URL'),
+    max_size=2 ** 32,
+    read_limit=2 ** 32,
+    write_limit=2 ** 32,
+    sslopt={"cert_reqs": ssl.CERT_NONE})
 
 
 
