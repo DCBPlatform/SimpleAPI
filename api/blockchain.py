@@ -18,7 +18,7 @@ def connect():
     return ws
 
 substrate = SubstrateInterface(
-    websocket=connect(),
+    websocket='https://1.dcb.my',
     ss58_format=42,
     type_registry_preset='substrate-node-template'
 )
