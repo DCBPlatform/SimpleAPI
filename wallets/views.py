@@ -10,9 +10,8 @@ import json
 
 from substrateinterface import SubstrateInterface, Keypair
 from substrateinterface.exceptions import SubstrateRequestException
-from api.blockchain import substrate
 from api.helpers import get_now
- 
+from api.blockchain import connect
 
 class GenerateWalletViews(APIView):
 
@@ -44,6 +43,8 @@ class WalletBalanceViews(APIView):
             response_['error_message'] = 'Account ID is not provided in params'
             return JsonResponse(response_)
 
+        substrate = connect()
+
         result = substrate.query(
             module='System',
             storage_function='Account',
@@ -67,6 +68,8 @@ class WalletBalanceViews(APIView):
 
         keypair = Keypair.create_from_private_key(key, ss58_address=address)
 
+        substrate = connect()
+        
         call = substrate.compose_call(
             call_module='Balances',
             call_function='transfer',
