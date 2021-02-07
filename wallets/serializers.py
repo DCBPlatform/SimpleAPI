@@ -7,3 +7,13 @@ from django.conf import settings
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 from django.utils.timezone import now
+
+from .models import (
+    Wallet
+)
+
+class WalletSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = '__all__'
+        read_only_fields = ['id']

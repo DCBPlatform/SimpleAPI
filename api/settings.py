@@ -18,15 +18,20 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',    
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
     'corsheaders',
+    'django_filters',
+    'phonenumber_field',    
     'rest_framework',
+    'rest_framework.authtoken',
 
     'chains',
     'swaps',
     'tokens',
+    'users',
     'wallets',
 ]
 
@@ -109,3 +114,15 @@ STATIC_URL = '/static/'
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
+
+SITE_ID = 1
+AUTH_USER_MODEL = 'users.CustomUser'
+
+
+REST_USE_JWT = True
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )    
+}
