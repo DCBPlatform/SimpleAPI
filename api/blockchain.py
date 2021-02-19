@@ -6,18 +6,17 @@ from decouple import config
 import ssl
 from websocket import create_connection, WebSocketConnectionClosedException
 
-
-
-substrate = SubstrateInterface(
-    url='wss://1.dcb.my',
-    ss58_format=42,
-    type_registry_preset='substrate-node-template'
-)
+ws = create_connection("wss://1.dcb.my",sslopt={"cert_reqs": ssl.CERT_NONE})
 
 def connect():
     substrate = SubstrateInterface(
-        url='wss://1.dcb.my',
+        websocket=ws,
         ss58_format=42,
         type_registry_preset='substrate-node-template'
-    )    
+    )
     return substrate
+
+try:
+    substrate = connect()
+except WebSocketConnectionClosedException:
+    substrate = connect()
