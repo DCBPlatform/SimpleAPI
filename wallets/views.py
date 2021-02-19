@@ -152,7 +152,7 @@ class WalletVerifyPhoneViews(APIView):
             result = send_verify_sms(number)
 
         response_ = {}
-        print(result)
+        response['result'] = result
 
         return JsonResponse(response_)
 
