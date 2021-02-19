@@ -1,0 +1,142 @@
+
+
+  {
+    "runtime_id": 1,
+    "types": {
+      "AccountIdOf": "AccountId",
+      "BalanceOf": "Balance",
+
+      "TokenIndex": "u32",
+      "TokenInfo": {
+        "type": "struct",
+        "type_mapping": [
+          ["name", "Vec<u8>"],
+          ["symbol", "Vec<u8>"],
+          ["owner", "AccountId"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "TokenInfoOf": "TokenInfo",      
+
+      "FundIndex": "u32",
+      "FundInfo": {
+        "type": "struct",
+        "type_mapping": [
+          ["beneficiary", "AccountId"],
+          ["deposit", "Balance"],
+          ["raised", "Balance"],
+          ["end", "BlockNumber"],
+          ["goal", "Balance"]
+        ]
+      },
+      "FundInfoOf": "FundInfo",
+
+      "PairIndex": "u128",
+      "PairInfo": {
+        "type": "struct",
+        "type_mapping": [
+          ["base", "TokenIndex"],
+          ["target", "TokenIndex"],
+          ["banker", "AccountId"],
+          ["active", "bool"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "PairInfoOf": "PairInfo",
+
+      "PairNativeIndex": "u128",
+      "PairNativeInfo": {
+        "type": "struct",
+        "type_mapping": [
+          ["target", "TokenIndex"],
+          ["banker", "AccountId"],
+          ["active", "bool"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "PairNativeInfoOf": "PairNativeInfo",      
+
+      "BuyOrderIndex": "u128",      
+      "BuyOrderInfo": {
+        "type": "struct",
+        "type_mapping": [        
+          ["pair", "u128"],
+          ["taker", "AccountId"],
+          ["volume", "Balance"],
+          ["ratio", "Balance"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "BuyOrderInfoOf": "BuyOrderInfo",  
+
+      "BuyOrderNativeIndex": "u128",      
+      "BuyOrderNativeInfo": {
+        "type": "struct",
+        "type_mapping": [        
+          ["pair", "u128"],
+          ["taker", "AccountId"],
+          ["volume", "Balance"],
+          ["ratio", "Balance"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "BuyOrderNativeInfoOf": "BuyOrderNativeInfo",        
+      
+      "SellOrderIndex": "u128",      
+      "SellOrderInfo": {
+        "type": "struct",
+        "type_mapping": [        
+          ["pair", "u128"],
+          ["taker", "AccountId"],
+          ["volume", "Balance"],
+          ["ratio", "Balance"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "SellOrderInfoOf": "SellOrderInfo",   
+      
+      "SellOrderNativeIndex": "u128",      
+      "SellOrderNativeInfo": {
+        "type": "struct",
+        "type_mapping": [        
+          ["pair", "u128"],
+          ["taker", "AccountId"],
+          ["volume", "Balance"],
+          ["ratio", "Balance"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "SellOrderNativeInfoOf": "SellOrderNativeInfo",       
+      
+      "TradeIndex": "u128",    
+      "TradeInfo": {
+        "type": "struct",
+        "type_mapping": [           
+          ["pair", "u128"],
+          ["maker", "AccountId"],
+          ["taker", "AccountId"],
+          ["volume", "Balance"],
+          ["ratio", "Balance"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "TradeInfoOf": "TradeInfo",
+
+      "TradeNativeIndex": "u128",    
+      "TradeNativeInfo": {
+        "type": "struct",
+        "type_mapping": [           
+          ["pair", "u128"],
+          ["maker", "AccountId"],
+          ["taker", "AccountId"],
+          ["volume", "Balance"],
+          ["ratio", "Balance"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "TradeNativeInfoOf": "TradeNativeInfo"      
+              
+    },
+    "versioning": [
+    ]
+  }

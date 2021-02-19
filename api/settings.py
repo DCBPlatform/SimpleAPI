@@ -29,8 +29,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'chains',
-    'swaps',
-    'tokens',
     'users',
     'wallets',
 ]

@@ -144,15 +144,16 @@ class WalletVerifyPhoneViews(APIView):
         verify = request.GET.get('verify', '')
 
         _data = json.loads(request.body)
+        response_ = {}
         number = _data['number']
         if verify:
             code = verify
             result = verify_sms(number,code)
+            response_['result'] = result.status
         else:
             result = send_verify_sms(number)
+            response_['result'] = result.status
 
-        response_ = {}
-        response_['result'] = result
 
         return JsonResponse(response_)
 
