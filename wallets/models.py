@@ -10,14 +10,15 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Wallet(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, null=True)
     wallet_address = models.CharField(max_length=255, null=True, unique=True)
-    controller_name = models.CharField(max_length=511, null=True)
-    controller_nickname = models.CharField(max_length=511, null=True)
+    owner_name = models.CharField(max_length=511, null=True)
+    owner_nickname = models.CharField(max_length=511, null=True)
     verified = models.BooleanField(default=False)
     kyc_level = models.IntegerField(default=0)
     phone = PhoneNumberField(null=True)
     nric = models.IntegerField(null=True)
-    passport = models.IntegerField(null=True)
+    passport = models.CharField(max_length=255, null=True)
 
     creation_dt = models.DateTimeField(auto_now_add=True,null=False)
     verification_dt = models.DateTimeField(null=True)

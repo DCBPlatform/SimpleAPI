@@ -37,14 +37,10 @@ urlpatterns = [
 
     url('v1/token', chain_views.TokenViews.as_view()),
 
-    # Admin work below....
-    url('v1/wallets/balance', wallet_views.WalletBalanceViews.as_view()),
-    url('v1/wallets/generate', wallet_views.GenerateWalletViews.as_view()),
-    url('v1/wallets/sign', wallet_views.WalletSignViews.as_view()),
-    url('v1/wallets/verify', wallet_views.WalletVerifyViews.as_view()),  
-    url('v1/wallets/phone', wallet_views.WalletVerifyPhoneViews.as_view()),  
+    url('v1/wallet', chain_views.WalletViews.as_view()),
 
-    url('v1/admin/', include(router.urls)),
+    # Admin work below....
+    url('v1/dcb/', include(router.urls)),
   
 ]
 

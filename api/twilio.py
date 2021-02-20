@@ -12,8 +12,6 @@ def send_verify_sms(number):
         .services(config('TWILIO_VERIFY_SERVICE_SID')) \
         .verifications \
         .create(to=number_in_string, channel='sms')
-
-    print(verification.status)
     return verification
 
 
@@ -24,6 +22,13 @@ def verify_sms(number, code):
                            .services(config('TWILIO_VERIFY_SERVICE_SID')) \
                            .verification_checks \
                            .create(to=number_in_string, code=code_in_string)
-
-    print(verification_check.status)
     return verification_check
+
+
+def send_sms(number_from, number_to, message):
+    message_ = client.messages \
+        .create(
+             body=message,
+             from_='+' + str(number_from),
+             to='+' + str(number_to))
+    return message_.sid

@@ -28,6 +28,13 @@ from chains.helpers.token import (
     get_banker
 )
 
+from chains.helpers.wallet import (
+    generate_wallet,
+    check_wallet_balance,
+    verify_phone,
+    verify_phone_code
+)
+
 
 class ExchangeOrderViews(APIView):
 
@@ -174,4 +181,37 @@ class TokenViews(APIView):
         if task == 'transfer':
             response_['data'] = transfer_token(token, _data)
  
-        return JsonResponse(response_)        
+        return JsonResponse(response_)       
+
+class WalletViews(APIView):
+
+    def get(self, request, format=None):
+        response_ = {}
+        response_['timestamp'] = get_now()
+        task = request.GET.get('task', '')
+
+        if task == 'generateWallet':
+            response_['data'] = generate_wallet()
+        elif task == 'checkBalance':
+            account_id = request.GET.get('accountId', '')
+            checker_id = request.GET.get('checkerId', '')
+            response_['data'] = check_wallet_balance(account_id, checker_id)
+
+        return JsonResponse(response_)
+
+    def post(self, request, format=None):
+        response_ = {}
+        response_['timestamp'] = get_now()
+        _data = request.data 
+
+        task = request.GET.get('task', '')
+
+        if task == 'verifyPhone':     
+            phone = request.GET.get('phone', '')       
+            response_['data'] = verify_phone(phone, _data)
+        elif task == 'verifyPhoneCode':            
+            code = request.GET.get('code', '')
+            phone = request.GET.get('phone', '')
+            response_['data'] = verify_phone_code(phone, code, _data)        
+ 
+        return JsonResponse(response_)                
