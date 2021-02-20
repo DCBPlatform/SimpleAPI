@@ -56,12 +56,14 @@
       },
       "PairNativeInfoOf": "PairNativeInfo",      
 
+
       "BuyOrderIndex": "u128",      
       "BuyOrderInfo": {
         "type": "struct",
         "type_mapping": [        
+          ["order_id", "u128"],
           ["pair", "u128"],
-          ["taker", "AccountId"],
+          ["buyer", "AccountId"],
           ["volume", "Balance"],
           ["ratio", "Balance"],
           ["created", "BlockNumber"]
@@ -73,8 +75,9 @@
       "BuyOrderNativeInfo": {
         "type": "struct",
         "type_mapping": [        
+          ["order_id", "u128"],
           ["pair", "u128"],
-          ["taker", "AccountId"],
+          ["buyer", "AccountId"],
           ["volume", "Balance"],
           ["ratio", "Balance"],
           ["created", "BlockNumber"]
@@ -86,8 +89,9 @@
       "SellOrderInfo": {
         "type": "struct",
         "type_mapping": [        
+          ["order_id", "u128"],
           ["pair", "u128"],
-          ["taker", "AccountId"],
+          ["seller", "AccountId"],
           ["volume", "Balance"],
           ["ratio", "Balance"],
           ["created", "BlockNumber"]
@@ -99,25 +103,26 @@
       "SellOrderNativeInfo": {
         "type": "struct",
         "type_mapping": [        
+          ["order_id", "u128"],
           ["pair", "u128"],
-          ["taker", "AccountId"],
+          ["seller", "AccountId"],
           ["volume", "Balance"],
           ["ratio", "Balance"],
           ["created", "BlockNumber"]
         ]
       },
-      "SellOrderNativeInfoOf": "SellOrderNativeInfo",       
+      "SellOrderNativeInfoOf": "SellOrderNativeInfo",          
       
       "TradeIndex": "u128",    
       "TradeInfo": {
         "type": "struct",
         "type_mapping": [           
-          ["pair", "u128"],
-          ["maker", "AccountId"],
-          ["taker", "AccountId"],
-          ["volume", "Balance"],
-          ["ratio", "Balance"],
-          ["created", "BlockNumber"]
+            ["pair", "u128"],
+            ["seller", "AccountId"],
+            ["buyer", "AccountId"],
+            ["volume", "Balance"],
+            ["ratio", "Balance"],
+            ["created", "BlockNumber"]
         ]
       },
       "TradeInfoOf": "TradeInfo",
@@ -126,12 +131,12 @@
       "TradeNativeInfo": {
         "type": "struct",
         "type_mapping": [           
-          ["pair", "u128"],
-          ["maker", "AccountId"],
-          ["taker", "AccountId"],
-          ["volume", "Balance"],
-          ["ratio", "Balance"],
-          ["created", "BlockNumber"]
+            ["pair", "u128"],
+            ["seller", "AccountId"],
+            ["buyer", "AccountId"],
+            ["volume", "Balance"],
+            ["ratio", "Balance"],
+            ["created", "BlockNumber"]
         ]
       },
       "TradeNativeInfoOf": "TradeNativeInfo"      

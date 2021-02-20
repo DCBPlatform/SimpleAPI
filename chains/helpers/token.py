@@ -1,10 +1,11 @@
 from substrateinterface import SubstrateInterface, Keypair
 from substrateinterface.exceptions import SubstrateRequestException
 
-from api.blockchain import substrate
+from api.blockchain import connect
 
 def get_paused_status(token):
     data_ = {}
+    substrate = connect()
     status = substrate.query(
         module='Token',
         storage_function='Paused',
@@ -15,6 +16,7 @@ def get_paused_status(token):
 
 def get_banker(token):
     data_ = {}
+    substrate = connect()
     banker = substrate.query(
         module='Token',
         storage_function='Owner',
@@ -25,6 +27,7 @@ def get_banker(token):
 
 def get_total_supply(token):
     data_ = {}
+    substrate = connect()
     supply = substrate.query(
         module='Token',
         storage_function='Supply',
@@ -35,6 +38,7 @@ def get_total_supply(token):
 
 def get_account_balance(token, account_id):
     data_ = {}
+    substrate = connect()
     balance = substrate.query(
         module='Token',
         storage_function='Balance',
@@ -48,6 +52,7 @@ def get_account_balance(token, account_id):
 
 def get_a_token(token):
     data_ = {}
+    substrate = connect()
     token = substrate.query(
         module='Token',
         storage_function='Tokens',
@@ -59,6 +64,8 @@ def get_a_token(token):
 
 def get_all_token():
     data_ = {}
+    substrate = connect()
+    
     data_['tokens'] = []
     token_count = substrate.query(
         module='Token',
@@ -73,26 +80,26 @@ def get_all_token():
         data_['tokens'].append(_token)       
     return data_
 
-def transfer_token(token, account_from, account_to, amount, _data):
+def transfer_token(token, _data):
     data_ = {}
+    substrate = connect()
     
-    _from = account_from
-    _to = account_to
-    _amount = amount
+    _to = _data['to']
+    _amount = _data['amount']
 
     caller = _data['caller']
-    key = _data['key']
+    mnemonic = _data['mnemonic']
 
-    keypair = Keypair.create_from_mnemonic(key)
-
+    keypair = Keypair.create_from_mnemonic(mnemonic)
     call = substrate.compose_call(
         call_module='Token',
         call_function='transfer',
         call_params={
             'token': token,
             'to': _to,
-            'value': str(int(0.01 * 10 ** 12))
+            'value': _amount
     })
+    
     extrinsic = substrate.create_signed_extrinsic(call=call, keypair=keypair)
     data_['extrinsic'] = extrinsic.value
     receipt = substrate.submit_extrinsic(extrinsic, wait_for_inclusion=True)
