@@ -5,7 +5,6 @@ from substrateinterface.exceptions import SubstrateRequestException
 from api.blockchain import connect
 
 
-
 def get_watchers():
     data_ = {}
     substrate = connect()
