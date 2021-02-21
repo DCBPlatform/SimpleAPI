@@ -22,7 +22,7 @@ def get_banker(token):
         storage_function='Owner',
         params=[str(token)]
     )    
-    data_['banker'] = banker.value   
+    data_['banker'] = substrate.ss58_encode(banker.value)
     return data_
 
 def get_total_supply(token):
@@ -59,7 +59,8 @@ def get_a_token(token):
         params=[
             str(token)
     ])  
-    data_['token'] = token.value     
+    data_['token'] = token.value    
+    data_['token']['owner'] = substrate.ss58_encode(data_['token']['owner']) 
     return data_
 
 def get_all_token():
@@ -77,6 +78,7 @@ def get_all_token():
             params=[str(i)])
         _token = token.value
         _token['tokenIndex'] = str(i)
+        _token['owner'] = substrate.ss58_encode(_token['owner'])
         data_['tokens'].append(_token)       
     return data_
 

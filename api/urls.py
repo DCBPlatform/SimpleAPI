@@ -9,7 +9,7 @@ datastructures.EmptyResultSet = EmptyResultSet
 
 
 
-from chains import views as chain_views
+from chains import views as cv
 from users import views as user_views
 from wallets import views as wallet_views
 
@@ -31,13 +31,18 @@ urlpatterns = router.urls
 
 urlpatterns = [
 
+    url('v1/bazaar', cv.BazaarViews.as_view()),
+    
+    url('v1/bridge', cv.BridgeViews.as_view()),
 
-    url('v1/exchange/orders', chain_views.ExchangeOrderViews.as_view()),
-    url('v1/exchange/pairs', chain_views.ExchangePairViews.as_view()),
+    url('v1/exchange/orders', cv.ExchangeOrderViews.as_view()),
+    url('v1/exchange/pairs', cv.ExchangePairViews.as_view()),
 
-    url('v1/token', chain_views.TokenViews.as_view()),
+    url('v1/referral', cv.ReferralViews.as_view()),
 
-    url('v1/wallet', chain_views.WalletViews.as_view()),
+    url('v1/token', cv.TokenViews.as_view()),
+
+    url('v1/wallet', cv.WalletViews.as_view()),
 
     # Admin work below....
     url('v1/dcb/', include(router.urls)),

@@ -3,6 +3,8 @@
   {
     "runtime_id": 1,
     "types": {
+      "Address": "AccountId",
+      "LookupSource": "AccountId",      
       "AccountIdOf": "AccountId",
       "BalanceOf": "Balance",
 
@@ -139,9 +141,84 @@
             ["created", "BlockNumber"]
         ]
       },
-      "TradeNativeInfoOf": "TradeNativeInfo"      
-              
+      "TradeNativeInfoOf": "TradeNativeInfo",
+
+      "ReferenceOf": "Reference",
+      "Reference": {
+        "type": "struct",
+        "type_mapping": [           
+          ["user", "AccountId"],
+          ["promoter", "AccountId"],
+          ["when", "BlockNumber"]
+        ]        
+      },    
+      "PromoterCode": "Vec<u8>",     
+         
+      "BazaarTradeIndex": "u128",
+      "BazaarTraderIndex": "u128",
+        
+      "BazaarTraderInfo": {
+        "type": "struct",
+        "type_mapping": [  
+          ["name", "Vec<u8>"],
+          ["account", "AccountId"],
+          ["created", "BlockNumber"]
+        ]
+      },
+      "BazaarTraderInfoOf": "BazaarTraderInfo",
+        
+      "BazaarTradeInfo": {
+        "type": "struct",
+        "type_mapping": [  
+          ["price", "u128"],
+          ["amount", "Balance"],
+          ["buyer", "AccountId"],
+          ["seller", "BazaarTraderIndex"],
+          ["escrowed", "bool"],
+          ["money_in", "bool"],
+          ["money_in_evidence", "Vec<u8>"],
+          ["money_in_confirmed", "bool"],
+          ["received", "bool"],
+          ["initiated", "bool"],
+          ["created", "BlockNumber"]
+        ]
+      },   
+      "BazaarTradeInfoOf": "BazaarTradeInfo"
     },
+
+    "IssueIndex": "u128",
+
+    "IssueInfoOf": "IssueInfo",
+    "IssueInfo": {
+      "type": "struct",
+      "type_mapping": [  
+        ["vault", "Vec<u8>"],
+        ["sender", "Vec<u8>"],
+        ["amount", "Balance"],
+        ["issuer", "AccountId"],
+        ["issued", "BlockNumber"],
+        ["vault_status", "bool"],
+        ["transaction", "Vec<u8>"],
+        ["minted_status", "bool"]
+      ]      
+    },
+
+    "RedemptionIndex": "u128",
+
+    "RedemptionInfoOf": "RedemptionInfo",
+    "RedemptionInfo": {
+      "type": "struct",
+      "type_mapping": [  
+        ["vault", "Vec<u8>"],
+        ["receiver", "Vec<u8>"],
+        ["amount", "AccountId"],
+        ["redeemer", "AccountId"],
+        ["redeemed", "BlockNumber"],
+        ["vault_status", "bool"],
+        ["transaction", "Vec<u8>"],
+        ["burnt_status", "bool"]
+      ]            
+    },        
     "versioning": [
     ]
   }

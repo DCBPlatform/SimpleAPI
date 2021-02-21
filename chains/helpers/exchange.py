@@ -64,6 +64,72 @@ def get_a_pair(ticker, native=False):
         data_['pair'] = []
         data_['pairExist'] = False
     data_['nativePair'] = native
+
+    if native:
+        trades = []        
+        trade_order_count = substrate.query(
+            module='Exchange',
+            storage_function='TradeNativeCount',
+            params=[str(ticker)]) 
+        if trade_order_count:
+            trade_count = trade_order_count.value
+            if trade_count > 10:
+                min_trade_count = trade_count -10
+            else:
+                min_trade_count = 0
+            for i in range(min_trade_count , trade_count):
+                trade = substrate.query(
+                    module='Exchange',
+                    storage_function='TradeNatives',
+                    params=[({
+                        'col1': ticker,
+                        'col2': str(i)
+                    })])                
+                if trade:          
+                    trades.append(trade.value) 
+
+            open_ratio = trades[0]['ratio']
+            close_ratio = trades[-1]['ratio']
+            highest_ratio = max(trades, key=lambda x:x['ratio'])['ratio']
+            lowest_ratio = min(trades, key=lambda x:x['ratio'])['ratio']
+            data_['open'] = open_ratio
+            data_['close'] = close_ratio
+            data_['high'] = highest_ratio
+            data_['low'] = lowest_ratio
+            
+                                      
+    else:
+        trades = []        
+        trade_order_count = substrate.query(
+            module='Exchange',
+            storage_function='TradeCount',
+            params=[str(ticker)]) 
+        if trade_order_count:
+            trade_count = trade_order_count.value
+            if trade_count > 10:
+                min_trade_count = trade_count -10
+            else:
+                min_trade_count = 0
+            for i in range(min_trade_count , trade_count):
+                trade = substrate.query(
+                    module='Exchange',
+                    storage_function='Trades',
+                    params=[({
+                        'col1': ticker,
+                        'col2': str(i)
+                    })])
+                if trade:
+                    trades.append(trade)  
+
+            open_ratio = trades[0]['ratio']
+            close_ratio = trades[-1]['ratio']
+            highest_ratio = max(trades, key=lambda x:x['ratio'])['ratio']
+            lowest_ratio = min(trades, key=lambda x:x['ratio'])['ratio']
+            data_['open'] = open_ratio
+            data_['close'] = close_ratio
+            data_['high'] = highest_ratio
+            data_['low'] = lowest_ratio
+
     return data_
 
 def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
@@ -109,6 +175,10 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
                     })])
                 if buy_order:
                     data_['buyOrders'].append(buy_order.value)   
+            if data_['buyOrderCount'] > 0:
+                data_['buyOrderHighest'] = max(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['buyOrderLowest'] = min(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
+
         else:
             data_['buyOrderCount'] = 0
 
@@ -128,7 +198,10 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
                         'col2': str(i)
                     })])
                 if sell_order:
-                    data_['sellOrders'].append(sell_order.value)    
+                    data_['sellOrders'].append(sell_order.value)   
+            if data_['sellOrderCount'] > 0:                    
+                data_['sellOrderHighest'] = max(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['sellOrderLowest'] = min(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']                     
         else:
             data_['sellOrderCount'] = 0                                        
     else:
@@ -149,6 +222,9 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
                     })])
                 if buy_order:
                     data_['buyOrders'].append(buy_order)   
+            if data_['buyOrderCount'] > 0:                    
+                data_['buyOrderHighest'] = max(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['buyOrderLowest'] = min(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']                    
         else:
             data_['buyOrderCount'] = 0                    
 
@@ -168,7 +244,10 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
                         'col2': str(i)
                     })])
                 if sell_order:
-                    data_['sellOrders'].append(sell_order)      
+                    data_['sellOrders'].append(sell_order)   
+            if data_['sellOrderCount'] > 0:                    
+                data_['sellOrderHighest'] = max(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['sellOrderLowest'] = min(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']                          
 
         else:
             data_['sellOrderCount'] = 0                    
@@ -217,6 +296,11 @@ def get_trades_for_a_pair(ticker, detail, limit, start_time, end_time, native=Fa
                     })])                
                 if trade:          
                     data_['trades'].append(trade.value)   
+            if data_['tradeCount'] > 0:                    
+                data_['open'] = data_['trades'][0]['ratio']
+                data_['close'] = data_['trades'][-1]['ratio']
+                data_['high'] = max(data_['trades'], key=lambda x:x['ratio'])['ratio']
+                data_['low'] = min(data_['trades'], key=lambda x:x['ratio'])['ratio']                       
         else:
             data_['tradeCount'] = 0
                                       
@@ -238,11 +322,15 @@ def get_trades_for_a_pair(ticker, detail, limit, start_time, end_time, native=Fa
                     })])
                 if trade:
                     data_['trades'].append(trade)   
+            if data_['tradeCount'] > 0:                    
+                data_['open'] = data_['trades'][0]['ratio']
+                data_['close'] = data_['trades'][-1]['ratio']
+                data_['high'] = max(data_['trades'], key=lambda x:x['ratio'])['ratio']
+                data_['low'] = min(data_['trades'], key=lambda x:x['ratio'])['ratio']                       
         else:
             data_['tradeCount'] = 0                           
 
     return data_
-
 
 def create_buy_order(ticker, _data, native=False):
     data_ = {}
@@ -361,6 +449,9 @@ def get_all_buy_order(ticker, native=False):
                     })])
                 if buy_order:
                     data_['buyOrders'].append(buy_order.value)   
+            if data_['buyOrderCount'] > 0:
+                data_['buyOrderHighest'] = max(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['buyOrderLowest'] = min(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']                    
         else:
             data_['buyOrderCount'] = 0
                                      
@@ -381,7 +472,10 @@ def get_all_buy_order(ticker, native=False):
                         'col2': str(i)
                     })])
                 if buy_order:
-                    data_['buyOrders'].append(buy_order)   
+                    data_['buyOrders'].append(buy_order)  
+            if data_['buyOrderCount'] > 0:
+                data_['buyOrderHighest'] = max(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['buyOrderLowest'] = min(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']                   
         else:
             data_['buyOrderCount'] = 0                                     
 
@@ -508,6 +602,9 @@ def get_all_sell_order(ticker, native=False):
                     })])
                 if sell_order:
                     data_['sellOrders'].append(sell_order.value)    
+            if data_['sellOrderCount'] > 0:
+                data_['sellOrderHighest'] = max(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['sellOrderLowest'] = min(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']                  
         else:
             data_['sellOrderCount'] = 0                                        
     else:                
@@ -528,7 +625,10 @@ def get_all_sell_order(ticker, native=False):
                         'col2': str(i)
                     })])
                 if sell_order:
-                    data_['sellOrders'].append(sell_order)      
+                    data_['sellOrders'].append(sell_order) 
+            if data_['sellOrderCount'] > 0:
+                data_['sellOrderHighest'] = max(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['sellOrderLowest'] = min(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']                         
 
         else:
             data_['sellOrderCount'] = 0                    

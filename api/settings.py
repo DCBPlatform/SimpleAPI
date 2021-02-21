@@ -45,7 +45,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api.urls'
-CORS_ORIGIN_ALLOW_ALL = True   
+
+CORS_ALLOWED_ORIGINS = [
+    "https://dcb.my",
+    "http://localhost:4200",
+    "http://127.0.0.1:4200"
+]
 
 TEMPLATES = [
     {

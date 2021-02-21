@@ -29,6 +29,18 @@ class Wallet(models.Model):
     def __str__(self):
         return self.name
 
+class Evidence(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, null=True)    
+
+    creation_dt = models.DateTimeField(auto_now_add=True,null=False)
+
+    class Meta:
+        ordering = ['-creation_dt']
+
+    def __str__(self):
+        return self.name        
+
 
     # STATUS = [
     #     ('CM', 'Completed'),

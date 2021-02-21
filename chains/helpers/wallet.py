@@ -66,7 +66,11 @@ def verify_phone_code(phone, code, _data):
         wallet = Wallet.objects.create(phone=phone, wallet_address=keypair.ss58_address)
         data_['wallet'] = wallet.id
         message = "Wallet: " + keypair.ss58_address + " has been generated for " + "+" + str(phone)
-        data_['sms'] = send_sms('18454201095', '+' + str(phone), message)
+        data_['sid'] = send_sms('18454201095', '+' + str(phone), message)
     else:
         data_['status'] = 'pending'
     return data_
+
+
+def upload_evidence(file_object, account_id, evidence):
+    pass
