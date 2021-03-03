@@ -14,7 +14,8 @@ from api.blockchain import connect
 from api.helpers import get_now
  
 from chains.helpers.exchange import (
-    get_all_pairs, get_a_pair, get_orderbook_for_a_pair, get_trades_for_a_pair, 
+    get_all_pairs, get_a_pair, get_orderbook_for_a_pair, 
+    get_trades_for_a_pair, get_trades_for_a_pair_by_user,
     create_buy_order, cancel_buy_order, get_all_buy_order,
     create_sell_order, cancel_sell_order, get_all_sell_order
 )
@@ -115,11 +116,21 @@ class ExchangeOrderViews(APIView):
                 response_['data'] = get_all_buy_order(ticker, native=True)
             else:
                 response_['data'] = get_all_buy_order(ticker)
-        else:
+        if order_type == 'buyByAccount':
+            if native:
+                response_['data'] = get_all_buy_order(ticker, account_id=account_id, native=True)
+            else:
+                response_['data'] = get_all_buy_order(ticker, account_id=account_id)                
+        elif order_type == 'sell':
             if native:
                 response_['data'] = get_all_sell_order(ticker, native=True)
             else:
                 response_['data'] = get_all_sell_order(ticker)
+        elif order_type == 'sellByAccount':
+            if native:
+                response_['data'] = get_all_sell_order(ticker, account_id=account_id, native=True)
+            else:
+                response_['data'] = get_all_sell_order(ticker, account_id=account_id)                
 
         return JsonResponse(response_)
 
@@ -197,6 +208,15 @@ class ExchangePairViews(APIView):
                     response_['data'] = get_trades_for_a_pair(ticker_id, detail, limit, start_time, end_time, native)
                 else:
                     response_['data'] = get_trades_for_a_pair(ticker_id, detail, limit, start_time, end_time)
+            elif detail == 'historicalByAccount':
+                limit = request.GET.get('limit', '')
+                start_time = request.GET.get('startTime', '')
+                end_time = request.GET.get('endTime', '')
+                account_id = request.GET.get('accountId', '')
+                if native:
+                    response_['data'] = get_trades_for_a_pair_by_user(ticker_id, detail, limit, start_time, end_time, account_id, native)
+                else:
+                    response_['data'] = get_trades_for_a_pair_by_user(ticker_id, detail, limit, start_time, end_time, account_id)                    
             else:
                 if native:
                     response_['data'] = get_a_pair(ticker_id, native)

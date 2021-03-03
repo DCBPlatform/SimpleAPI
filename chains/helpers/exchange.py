@@ -3,11 +3,14 @@ from substrateinterface.exceptions import SubstrateRequestException
 
 from api.blockchain import connect
 
+from chains.helpers.token import get_all_token
+
 
 def get_all_pairs():
     data_ = {}
     substrate = connect()
-    
+
+    tokens = get_all_token()['tokens']
 
     data_['pairs'] = []   
 
@@ -22,7 +25,13 @@ def get_all_pairs():
             storage_function='Pair',
             params=[str(i)])
         pair_data = pair.value
+        for token in tokens:
+            if pair_data['base'] == int(token['tokenIndex']):
+                pair_data['base'] = token
+            if pair_data['target'] == int(token['tokenIndex']):
+                pair_data['target'] = token
         pair_data['pairId'] = str(i)
+        pair_data['banker'] = substrate.ss58_encode(pair_data['banker'])
         data_['pairs'].append(pair_data)    
 
     data_['nativePairs'] = []   
@@ -38,7 +47,11 @@ def get_all_pairs():
             storage_function='PairNative',
             params=[str(i)])
         native_pair_data = native_pair.value
+        for token in tokens:        
+            if native_pair_data['target'] == int(token['tokenIndex']):
+                native_pair_data['target'] = token
         native_pair_data['pairId'] = str(i)
+        native_pair_data['banker'] = substrate.ss58_encode(native_pair_data['banker'])
         data_['nativePairs'].append(native_pair_data)
 
     return data_
@@ -56,9 +69,10 @@ def get_a_pair(ticker, native=False):
             module='Exchange',
             storage_function='Pair',
             params=[str(ticker)]) 
-    if pair:
+    if pair:        
         data_['pairId'] = ticker
         data_['pair'] = pair.value
+        data_['pair']['banker'] = substrate.ss58_encode(data_['pair']['banker'])
         data_['pairExist'] = True
     else:
         data_['pair'] = []
@@ -150,7 +164,8 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
     data_['nativePair'] = native     
     if pair:
         data_['pairId'] = ticker
-        data_['pair'] = pair.value        
+        data_['pair'] = pair.value    
+        data_['pair']['banker'] = substrate.ss58_encode(data_['pair']['banker'])    
         data_['pairExist'] = True
     else:
         data_['pair'] = []
@@ -178,6 +193,8 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
             if data_['buyOrderCount'] > 0:
                 data_['buyOrderHighest'] = max(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
                 data_['buyOrderLowest'] = min(data_['buyOrders'], key=lambda x:x['ratio'])['ratio']
+                data_['buyOrderBiggest'] = max(data_['buyOrders'], key=lambda x:x['volume'])['volume']
+                data_['buyOrderSmallest'] = min(data_['buyOrders'], key=lambda x:x['volume'])['volume']                
 
         else:
             data_['buyOrderCount'] = 0
@@ -201,7 +218,9 @@ def get_orderbook_for_a_pair(ticker, detail, depth, native=False):
                     data_['sellOrders'].append(sell_order.value)   
             if data_['sellOrderCount'] > 0:                    
                 data_['sellOrderHighest'] = max(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']
-                data_['sellOrderLowest'] = min(data_['sellOrders'], key=lambda x:x['ratio'])['ratio']                     
+                data_['sellOrderLowest'] = min(data_['sellOrders'], key=lambda x:x['ratio'])['ratio'] 
+                data_['sellOrderBiggest'] = max(data_['sellOrders'], key=lambda x:x['volume'])['volume']
+                data_['sellOrderSmallest'] = min(data_['sellOrders'], key=lambda x:x['volume'])['volume']                                      
         else:
             data_['sellOrderCount'] = 0                                        
     else:
@@ -271,7 +290,8 @@ def get_trades_for_a_pair(ticker, detail, limit, start_time, end_time, native=Fa
     data_['nativePair'] = native     
     if pair:
         data_['pairId'] = ticker
-        data_['pair'] = pair.value        
+        data_['pair'] = pair.value   
+        data_['pair']['banker'] = substrate.ss58_encode(data_['pair']['banker'])     
         data_['pairExist'] = True
     else:
         data_['pair'] = []
@@ -295,7 +315,7 @@ def get_trades_for_a_pair(ticker, detail, limit, start_time, end_time, native=Fa
                         'col2': str(i)
                     })])                
                 if trade:          
-                    data_['trades'].append(trade.value)   
+                    data_['trades'].append(trade.value)                       
             if data_['tradeCount'] > 0:                    
                 data_['open'] = data_['trades'][0]['ratio']
                 data_['close'] = data_['trades'][-1]['ratio']
@@ -331,6 +351,72 @@ def get_trades_for_a_pair(ticker, detail, limit, start_time, end_time, native=Fa
             data_['tradeCount'] = 0                           
 
     return data_
+
+def get_trades_for_a_pair_by_user(ticker, detail, limit, start_time, end_time, account_id, native=False):
+    data_ = {}
+    substrate = connect()
+    if native:
+        pair = substrate.query(
+            module='Exchange',
+            storage_function='PairNative',
+            params=[str(ticker)])             
+    else:
+        pair = substrate.query(
+            module='Exchange',
+            storage_function='Pair',
+            params=[str(ticker)]) 
+    
+    data_['nativePair'] = native     
+    if pair:
+        data_['pairId'] = ticker
+        data_['pair'] = pair.value    
+        data_['pair']['banker'] = substrate.ss58_encode(data_['pair']['banker'])    
+        data_['pairExist'] = True
+    else:
+        data_['pair'] = []
+        data_['pairExist'] = False
+        return data_         
+
+    if native:
+        data_['trades'] = []        
+        trade_user_list = substrate.query(
+            module='Exchange',
+            storage_function='TradeNativeUserList',
+            params=[({
+                'col1': ticker,
+                'col2': account_id
+            })]) 
+        if trade_user_list:
+            data_['tradeCount'] = len(trade_user_list.value)
+            data_['trades'].append(trade_user_list)                   
+            data_['open'] = data_['trades'][0]['ratio']
+            data_['close'] = data_['trades'][-1]['ratio']
+            data_['high'] = max(data_['trades'], key=lambda x:x['ratio'])['ratio']
+            data_['low'] = min(data_['trades'], key=lambda x:x['ratio'])['ratio']                       
+        else:
+            data_['tradeCount'] = 0
+                                      
+    else:
+        data_['trades'] = []        
+        trade_user_list = substrate.query(
+            module='Exchange',
+            storage_function='TradeUserList',
+            params=[({
+                'col1': ticker,
+                'col2': account_id
+            })]) 
+        if trade_user_list:
+            data_['tradeCount'] = len(trade_user_list.value)
+            data_['trades'].append(trade_user_list)                   
+            data_['open'] = data_['trades'][0]['ratio']
+            data_['close'] = data_['trades'][-1]['ratio']
+            data_['high'] = max(data_['trades'], key=lambda x:x['ratio'])['ratio']
+            data_['low'] = min(data_['trades'], key=lambda x:x['ratio'])['ratio']                       
+        else:
+            data_['tradeCount'] = 0                          
+
+    return data_
+
 
 def create_buy_order(ticker, _data, native=False):
     data_ = {}
@@ -407,7 +493,7 @@ def cancel_buy_order(ticker, order_id, _data, native=False):
 
     return data_
 
-def get_all_buy_order(ticker, native=False):
+def get_all_buy_order(ticker, account_id=None, native=False):
     data_ = {}
     substrate = connect()
     if native:

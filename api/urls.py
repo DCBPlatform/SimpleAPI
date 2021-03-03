@@ -45,7 +45,7 @@ urlpatterns = [
     url('v1/wallet', cv.WalletViews.as_view()),
 
     # Admin work below....
-    url('v1/dcb/', include(router.urls)),
+    url('dcb/', include(router.urls)),
   
 ]
 
