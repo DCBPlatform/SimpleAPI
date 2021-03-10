@@ -86,6 +86,7 @@ def get_a_pair(ticker, native=False):
             storage_function='TradeNativeCount',
             params=[str(ticker)]) 
         if trade_order_count:
+            accumulated_volume = 0
             trade_count = trade_order_count.value
             if trade_count > 10:
                 min_trade_count = trade_count -10
@@ -101,15 +102,18 @@ def get_a_pair(ticker, native=False):
                     })])                
                 if trade:          
                     trades.append(trade.value) 
+                    accumulated_volume += trade.value['volume']
 
             open_ratio = trades[0]['ratio']
             close_ratio = trades[-1]['ratio']
             highest_ratio = max(trades, key=lambda x:x['ratio'])['ratio']
             lowest_ratio = min(trades, key=lambda x:x['ratio'])['ratio']
+
             data_['open'] = open_ratio
             data_['close'] = close_ratio
             data_['high'] = highest_ratio
             data_['low'] = lowest_ratio
+            data_['volume'] = accumulated_volume
             
                                       
     else:

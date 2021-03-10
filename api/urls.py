@@ -10,6 +10,8 @@ datastructures.EmptyResultSet = EmptyResultSet
 
 
 from chains import views as cv
+from hooks import views as hook_views
+from payments import views as payment_views
 from users import views as user_views
 from wallets import views as wallet_views
 
@@ -37,6 +39,11 @@ urlpatterns = [
 
     url('v1/exchange/orders', cv.ExchangeOrderViews.as_view()),
     url('v1/exchange/pairs', cv.ExchangePairViews.as_view()),
+
+    url('v1/hooks/mistertango', hook_views.MistertangoHookViews.as_view()),
+    url('v1/hooks/stripe', hook_views.StripeHookViews.as_view()),
+
+    url('v1/payment/card', payment_views.PaymentCardViews.as_view()),
 
     url('v1/referral', cv.ReferralViews.as_view()),
 
