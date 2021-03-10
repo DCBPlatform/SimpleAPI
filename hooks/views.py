@@ -11,7 +11,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 import os
 import json
-import stripe
 
 from decouple import config
 

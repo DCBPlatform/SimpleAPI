@@ -11,7 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 import os
 import json
-import stripe
+
 
 from decouple import config
 
@@ -22,7 +22,6 @@ from api.helpers import get_now
 
 from payments.models import CardPayment
 
-stripe.api_key = config('STRIPE_PRIVATE')
 
 class PaymentCardViews(APIView):
 
@@ -41,17 +40,17 @@ class PaymentCardViews(APIView):
         response_['timestamp'] = get_now()
         _data = request.data 
 
-        stripe_ = stripe.Charge.create(
-            amount=_data['amount'] * 100,
-            currency="eur",
-            source=_data['stripeToken'],
-            description="DCB Wallet")
+        # stripe_ = stripe.Charge.create(
+        #     amount=_data['amount'] * 100,
+        #     currency="eur",
+        #     source=_data['stripeToken'],
+        #     description="DCB Wallet")
 
-        card_payment = CardPayment.objects.create(
-            email_address=_data['email'],
-            amount=_data['amount'] * 100,
-            stripe_id=stripe_.id,
-            card_id=_data['cardId']
-        )
+        # card_payment = CardPayment.objects.create(
+        #     email_address=_data['email'],
+        #     amount=_data['amount'] * 100,
+        #     stripe_id=stripe_.id,
+        #     card_id=_data['cardId']
+        # )
 
         return JsonResponse(response_)  
