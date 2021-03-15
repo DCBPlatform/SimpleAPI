@@ -69,9 +69,18 @@ def get_a_pair(ticker, native=False):
             module='Exchange',
             storage_function='Pair',
             params=[str(ticker)]) 
+
+    tokens = get_all_token()['tokens']
+
     if pair:        
         data_['pairId'] = ticker
         data_['pair'] = pair.value
+        for token in tokens:        
+            if data_['pair']['target'] == int(token['tokenIndex']):
+                data_['pair']['target'] = token       
+            if 'base' in data_['pair']:
+                if data_['pair']['base'] == int(token['tokenIndex']):
+                    data_['pair']['base'] = token                   
         data_['pair']['banker'] = substrate.ss58_encode(data_['pair']['banker'])
         data_['pairExist'] = True
     else:
@@ -108,12 +117,12 @@ def get_a_pair(ticker, native=False):
             close_ratio = trades[-1]['ratio']
             highest_ratio = max(trades, key=lambda x:x['ratio'])['ratio']
             lowest_ratio = min(trades, key=lambda x:x['ratio'])['ratio']
-
-            data_['open'] = open_ratio
-            data_['close'] = close_ratio
-            data_['high'] = highest_ratio
-            data_['low'] = lowest_ratio
-            data_['volume'] = accumulated_volume
+            division_ = 10 ** 12
+            data_['open'] = open_ratio / division_
+            data_['close'] = close_ratio / division_
+            data_['high'] = highest_ratio / division_
+            data_['low'] = lowest_ratio / division_
+            data_['volume'] = accumulated_volume / division_
             
                                       
     else:
@@ -143,10 +152,11 @@ def get_a_pair(ticker, native=False):
             close_ratio = trades[-1]['ratio']
             highest_ratio = max(trades, key=lambda x:x['ratio'])['ratio']
             lowest_ratio = min(trades, key=lambda x:x['ratio'])['ratio']
-            data_['open'] = open_ratio
-            data_['close'] = close_ratio
-            data_['high'] = highest_ratio
-            data_['low'] = lowest_ratio
+            data_['open'] = open_ratio / division_
+            data_['close'] = close_ratio / division_
+            data_['high'] = highest_ratio / division_
+            data_['low'] = lowest_ratio / division_
+            data_['volume'] = accumulated_volume / division_
 
     return data_
 
